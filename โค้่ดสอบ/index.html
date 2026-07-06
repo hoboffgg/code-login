@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* อนิเมชันพื้นหลังเคลื่อนไหว */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* กล่องสไตล์ Glassmorphism */
+        .container {
+            position: relative;
+            width: 400px;
+            min-height: 450px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* อนิเมชันทางเข้าของกล่อง */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            color: #333;
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-login:hover {
+            background: #e73c7e;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* หน้าแสดงผลเมื่อ Login สำเร็จ */
+        .welcome-screen {
+            display: none;
+            text-align: center;
+            color: #fff;
+        }
+
+        .welcome-screen h1 {
+            font-size: 1.8em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.7); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container fade-in" id="main-container">
+        <div id="login-form">
+            <h2>Sign In</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="Username" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+                <div class="error-msg" id="error-text">Username หรือ Password ไม่ถูกต้อง!</div>
+            </form>
+        </div>
+
+        <div id="welcome-page" class="welcome-screen">
+            <h1>สวัสดี ฉันชื่อกุลพัชรลักษณ์ สิงหาวินภัทร เลขที่11</h1>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            // ป้องกันไม่ให้หน้าเว็บรีเฟรชเมื่อกดส่งฟอร์ม
+            event.preventDefault(); 
+            
+            const userInput = document.getElementById('username').value;
+            const passInput = document.getElementById('password').value;
+            const errorText = document.getElementById('error-text');
+            const loginForm = document.getElementById('login-form');
+            const welcomePage = document.getElementById('welcome-page');
+            const container = document.getElementById('main-container');
+
+            // ตรวจสอบเงื่อนไข Username และ Password
+            if (userInput === 'admin' && passInput === '123456') {
+                errorText.style.display = 'none';
+                
+                // อนิเมชันซ่อนฟอร์ม Login และแสดงหน้ายินดีต้อนรับ
+                container.style.transform = 'scale(0.9)';
+                container.style.opacity = '0';
+                
+                setTimeout(() => {
+                    loginForm.style.display = 'none';
+                    welcomePage.style.display = 'block';
+                    
+                    // ปรับขนาดกล่องให้พอดีกับข้อความใหม่
+                    container.style.width = '500px'; 
+                    container.style.transform = 'scale(1)';
+                    container.style.opacity = '1';
+                }, 500);
+
+            } else {
+                // แสดงข้อความแจ้งเตือนเมื่อรหัสผิดพร้อมอนิเมชันสั่น
+                errorText.style.display = 'block';
+                errorText.style.animation = 'none';
+                setTimeout(() => {
+                    errorText.style.animation = '';
+                }, 10);
+            }
+        }
+    </script>
+</body>
+</html>
